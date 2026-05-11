@@ -1,0 +1,74 @@
+version: '3.8'
+
+# 🌟 هنا ضفنا الشبكة المخصصة عشان نجبرهم يشوفوا بعض
+networks:
+  rag_network:
+    driver: bridge
+
+services:
+  # 1. قاعدة بيانات النصوص (MongoDB)
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_service
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb:/data/db
+    networks:
+      - rag_network
+    restart: unless-stopped
+
+  # 2. محرك البحث الذكي (Qdrant)
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant_service
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ../assets/db/qdrant_data:/qdrant/storage
+    networks:
+      - rag_network
+    restart: unless-stopped
+
+  # 3. السيرفر والعقل المدبر (FastAPI)
+  backend:
+    build:
+      context: ../src
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    command: uvicorn main:app --host 0.0.0.0 --port 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../assets/files:/app/assets/files
+    env_file:
+      - ../src/.env
+    environment:
+      - MONGODB_URI=mongodb://mongodb_service:27017
+      - QDRANT_HOST=qdrant_service
+      - QDRANT_URL=http://qdrant_service:6333
+    networks:
+      - rag_network
+    depends_on:
+      - mongodb
+      - qdrant
+    restart: unless-stopped
+
+  # 4. واجهة المستخدم (Streamlit)
+  frontend:
+    build:
+      context: ../src
+      dockerfile: Dockerfile
+    container_name: streamlit_frontend
+    command: streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      # 🌟 هنا ربطنا الواجهة باسم السيرفر الرسمي جوه الشبكة
+      - BASE_URL=http://fastapi_backend:5000/api
+    networks:
+      - rag_network
+    depends_on:
+      - backend
+    restart: unless-stopped
