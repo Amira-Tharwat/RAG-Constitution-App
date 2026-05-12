@@ -1,6 +1,4 @@
-# RAG-Constitution-App
-
-# 🏛️ Egyptian Constitution Mini-RAG Engine
+# Egyptian Constitution Mini-RAG Engine
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
@@ -8,11 +6,11 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=flat&logo=mongodb&logoColor=white)
 ![Qdrant](https://img.shields.io/badge/Qdrant-F9669A?style=flat&logo=qdrant&logoColor=white)
 
-## 📖 About The Project
+## About The Project
 
 This project is a highly specialized **Retrieval-Augmented Generation (RAG)** system designed to query and analyze the Egyptian Constitution. Built with a strict Clean Architecture pattern, the system prioritizes legal accuracy and zero-hallucination responses. It utilizes advanced natural language processing to semantically search constitutional articles and generates precise, context-bound answers using state-of-the-art LLMs.
 
-### ✨ Key Features
+### Key Features
 * **Smart Legal Chunking:** Custom Regex-based text splitting that perfectly isolates distinct constitutional articles (مواد) without arbitrary overlap, preserving legal integrity.
 * **Cost-Effective Local Embeddings:** Utilizes `fastembed` with the `paraphrase-multilingual-MiniLM-L12-v2` model locally, ensuring zero API costs for vectorization, near-zero latency, and strict data privacy.
 * **Dual LLM Support:** Implements the Factory Design Pattern to dynamically switch between **Google Gemini** and **Groq (Llama 3.1)** based on user preference.
@@ -20,7 +18,7 @@ This project is a highly specialized **Retrieval-Augmented Generation (RAG)** sy
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
