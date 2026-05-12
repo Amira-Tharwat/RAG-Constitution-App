@@ -7,7 +7,6 @@ class GroqProvider(LLMInterface):
     def __init__(self):
         self.settings = get_settings()
         self.api_key = self.settings.GROQ_API_KEY 
-        # الموديل ده الأسرع والأكثر استقراراً في Groq
         self.model_name = "llama-3.1-8b-instant" 
         self.url = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -27,7 +26,6 @@ class GroqProvider(LLMInterface):
         try:
             response = requests.post(self.url, headers=headers, json=payload, timeout=10)
             
-            # التعديل هنا: عشان لو Groq زعل مننا، يقولنا زعلان ليه بالظبط!
             if response.status_code != 200:
                 try:
                     error_details = response.json().get("error", {}).get("message", response.text)

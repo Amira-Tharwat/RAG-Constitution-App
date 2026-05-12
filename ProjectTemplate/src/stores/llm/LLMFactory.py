@@ -14,7 +14,6 @@ class LLMFactory:
         else:
             raise ValueError(f"الموديل '{provider_name}' غير مدعوم.")
 
-    # رجعنا الدالة دي عشان الكنترولر يعرف يقطع النصوص
     @staticmethod
     def get_embedding_provider(provider_name: str):
         if provider_name == "local":

@@ -1,13 +1,11 @@
 version: '3.8'
 
-# 🌟 هنا ضفنا الشبكة المخصصة عشان نجبرهم يشوفوا بعض
 networks:
   rag_network:
     driver: bridge
 
 services:
-  # 1. قاعدة بيانات النصوص (MongoDB)
-  mongodb:
+   mongodb:
     image: mongo:latest
     container_name: mongodb_service
     ports:
@@ -18,7 +16,6 @@ services:
       - rag_network
     restart: unless-stopped
 
-  # 2. محرك البحث الذكي (Qdrant)
   qdrant:
     image: qdrant/qdrant:latest
     container_name: qdrant_service
@@ -31,7 +28,6 @@ services:
       - rag_network
     restart: unless-stopped
 
-  # 3. السيرفر والعقل المدبر (FastAPI)
   backend:
     build:
       context: ../src
@@ -55,7 +51,6 @@ services:
       - qdrant
     restart: unless-stopped
 
-  # 4. واجهة المستخدم (Streamlit)
   frontend:
     build:
       context: ../src
@@ -65,7 +60,6 @@ services:
     ports:
       - "8501:8501"
     environment:
-      # 🌟 هنا ربطنا الواجهة باسم السيرفر الرسمي جوه الشبكة
       - BASE_URL=http://fastapi_backend:5000/api
     networks:
       - rag_network

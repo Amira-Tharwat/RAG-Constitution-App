@@ -8,11 +8,11 @@ from models.db_schemes.data_chunk import RetrievalDocument
 class QDrantDB(VectorDBInterface):
     def __init__(self):
         self.settings = get_settings()
-        # هنجيب المسار اللي هنحفظ فيه قاعدة البيانات من الـ BaseController
+        # هنجيب الباث اللي هنحفظ فيه  البيانات من الـ BaseController
         base_ctrl = BaseController()
         db_path = base_ctrl.get_db_path(self.settings.VECTOR_DB_PATH)
         
-        # إنشاء الاتصال بقاعدة البيانات (وحفظها في الهارد ديسك)
+        #  انشاء كونيكشن
         self.client = QdrantClient(url="http://qdrant_service:6333")
         self.dimension = self.settings.EMBEDDING_DIMENSION
 
@@ -28,20 +28,19 @@ class QDrantDB(VectorDBInterface):
     def add_documents(self, collection_name: str, chunks: list, embeddings: list):
         points = []
         for idx, chunk in enumerate(chunks):
-            # Qdrant بيحتاج البيانات في شكل (PointStruct)
             points.append(PointStruct(
-                id=idx, # رقم تعريفي مميز
-                vector=embeddings[idx], # الـ Vector (الأرقام)
+                id=idx,
+                vector=embeddings[idx], 
                 payload={ # الـ Payload ده اللي بيشيل النص والـ Metadata
                     "text": chunk["chunk_text"], 
                     "metadata": chunk["chunk_metadata"]
                 }
             ))
-        # الحفظ الفعلي
+       
         self.client.upsert(collection_name=collection_name, points=points)
 
-    def search_by_vector(self, collection_name: str, vector: list, limit: int = 5) -> list[RetrievalDocument]:
-        # التحديث الجديد لـ Qdrant بيستخدم query_points بدل search القديمة
+    def search_by_vector(self, collection_name: str, vector: list, limit: int = 5) -> list[RetrievalDocument]:\
+     # بتاخد فيكتور السؤال و تدور علي ال top chunks (5)
         response = self.client.query_points(
             collection_name=collection_name,
             query=vector,
@@ -49,8 +48,6 @@ class QDrantDB(VectorDBInterface):
         )
         
         results = []
-        # النتائج بتبقى موجودة جوه response.points
         for hit in response.points:
-            # تغليف النتيجة في الـ Schema اللي عملناها قبل كده
             results.append(RetrievalDocument(text=hit.payload["text"], score=hit.score))
         return results

@@ -8,7 +8,6 @@ class DataChunk(BaseModel):
     chunk_order: int = Field(..., gt=0)
     chunk_project_id: str
 
-# ده كلاس إضافي هنستخدمه بعدين لما نيجي نبحث في الـ Vector DB
 class RetrievalDocument(BaseModel):
     text: str
     score: float

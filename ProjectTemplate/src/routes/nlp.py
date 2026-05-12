@@ -21,6 +21,6 @@ async def search(project_id: str, request: SearchRequest):
 @nlp_router.post("/index/answer/{project_id}")
 async def answer_question(project_id: str, request: SearchRequest):
     nlp_controller = NlpController()
-    # تم إضافة request.provider هنا لإرسال اختيار المستخدم إلى العقل المدبر
+    # نبعت السؤال لل nlp_controller عشان يبعته لل llm  و ناخد الاجابة 
     response = nlp_controller.answer_rag_question(project_id, request.query, request.provider, request.limit)
     return response

@@ -11,21 +11,19 @@ class ProcessController(BaseController):
         self.file_controller = FileController()
 
     def _extract_and_normalize_pdf(self, pdf_path: str) -> str:
-        """
-        دالة خاصة لاستخراج النص من الـ PDF مع قص الهوامش وتطبيع النص العربي
-        """
+        
         doc = fitz.open(pdf_path)
         full_text = ""
         
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             
-            # قص الهوامش العلوية والسفلية
+            # cut header & footer
             rect = page.rect
             clip_rect = fitz.Rect(0, 50, rect.width, rect.height - 60)
             full_text += page.get_text("text", clip=clip_rect) + " "
             
-        # خوارزمية التطبيع (Text Normalization)
+        # (Text Normalization)
         text = full_text.replace('\n', ' ')
         text = text.replace('األ', 'الأ').replace('اإل', 'الإ').replace('اآل', 'الآ')
         text = text.replace('ـ', '')
@@ -34,7 +32,6 @@ class ProcessController(BaseController):
         text = re.sub(r'(\S)\s+ي\b', r'\1ي', text)
         text = text.replace('ال مادة', 'المادة')
        
-        # تنظيف بقايا الهوامش
         text = text.replace('مكرر ا', 'مكررا')
         text = re.sub(r'ا?\s*ل\s*ب\s*ا\s*ب', 'الباب', text)
         text = re.sub(r'ا?\s*ل\s*ف\s*ص\s*ل', 'الفصل', text)
@@ -47,15 +44,13 @@ class ProcessController(BaseController):
         text = re.sub(r'م\s*ا\s*د\s*ة', 'مادة', text)
         text = re.sub(r'\s+', ' ', text)
         
-        # قص الفهرس النهائي
+        # cut الفهرس 
         text = re.split(r'ا?\s*ل\s*ف\s*ه\s*ر\s*س', text)[0]
         
         return text
 
     def _chunk_by_article(self, text: str) -> list:
-        """
-        دالة خاصة لتقطيع النص إلى مواد دستورية واستخراج الميتا داتا
-        """
+        
         pattern = r'[\(\)]*\s*(?<![ء-ي])مادة\s*[\(\)]*\s*\d+\s*(?:مكرر[ااً]?)?\s*[\(\)]*'
         matches = list(re.finditer(pattern, text))
         
@@ -112,23 +107,17 @@ class ProcessController(BaseController):
         return chunks_with_metadata
 
     def process_files(self, filename: str):
-        """
-        المسار الأساسي للمعالجة، يستخدم الدوال الخاصة لإرجاع البيانات 
-        بالتنسيق الذي تقبله قاعدة البيانات (MongoDB & Qdrant)
-        """
+       
         project_dir = self.file_controller.get_file_path(self.project_id)
         file_path = os.path.join(project_dir, filename)
 
         if not os.path.exists(file_path):
             return None
 
-        # 1. استخراج النص وتنظيفه
         normalized_text = self._extract_and_normalize_pdf(file_path)
 
-        # 2. التقطيع الدلالي (Semantic Chunking)
         article_chunks = self._chunk_by_article(normalized_text)
 
-        # 3. تحضير المخرجات لتناسب الـ Models القادمة
         formatted_chunks = []
         for idx, chunk in enumerate(article_chunks):
             formatted_chunks.append({

@@ -6,16 +6,13 @@ from helpers.config import get_settings
 class GeminiProvider(LLMInterface):
     def __init__(self):
         self.settings = get_settings()
-        # جلب المفتاح
         api_key = os.environ.get("GEMINI_API_KEY")
         self.model_name = os.environ.get("GENERATE_RESPONSE_MODEL", "gemini-2.5-flash")
         
-        # ربط المكتبة الجديدة
         self.client = genai.Client(api_key=api_key)
 
     def generate_response(self, prompt: str) -> str:
         try:
-            # طريقة توليد النص الجديدة
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=prompt

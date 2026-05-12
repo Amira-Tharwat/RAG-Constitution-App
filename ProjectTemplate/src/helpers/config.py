@@ -19,7 +19,6 @@ class Settings(BaseSettings):
     MONGODB_DB_NAME: str
     
     # AI & Model Settings
-    # خلينا المفاتيح اختيارية عشان Pydantic ميزعلش لو مسحناها من الـ .env
     GEMINI_API_KEY: Optional[str] = None 
     GROQ_API_KEY: Optional[str] = None
     
