@@ -91,7 +91,7 @@ git clone https://github.com/Amira-Tharwat/RAG-Constitution-App.git
 cd constitution-rag
 
 
-# Database URLs
+Database URLs
 MONGODB_URL=mongodb://localhost:27017
 QDRANT_URL=http://localhost:6333
 
