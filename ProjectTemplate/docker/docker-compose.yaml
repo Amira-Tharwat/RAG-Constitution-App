@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-   mongodb:
+  mongodb:
     image: mongo:latest
     container_name: mongodb_service
     ports:
