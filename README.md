@@ -84,6 +84,9 @@ This project is a highly specialized **Retrieval-Augmented Generation (RAG)** sy
 
 
 Getting Started
+Prerequisites
+Docker and Docker Compose installed.
+
 
 Installation
 Clone the repository:
@@ -95,7 +98,9 @@ Database URLs
 MONGODB_URL=mongodb://localhost:27017
 QDRANT_URL=http://localhost:6333
 
+
 Access the Application:
+Open a terminal in the root directory and execute the following command: docker compose up -d –build
 •Frontend UI (Streamlit): http://localhost:8501
 •API Docs (Swagger UI): http://localhost:5000/docs
 •Vector DB Dashboard (Qdrant): http://localhost:6333/dashboard
