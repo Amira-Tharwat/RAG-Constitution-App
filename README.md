@@ -81,3 +81,23 @@ This project is a highly specialized **Retrieval-Augmented Generation (RAG)** sy
 │  │    └── QdrantDB (Semantic Vector Search & Storage)             │     │
 │  └────────────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────────────┘
+
+
+Getting Started
+
+Installation
+Clone the repository:
+git clone https://github.com/Amira-Tharwat/RAG-Constitution-App.git
+cd constitution-rag
+
+
+# Database URLs
+MONGODB_URL=mongodb://localhost:27017
+QDRANT_URL=http://localhost:6333
+
+Access the Application:
+•Frontend UI (Streamlit): http://localhost:8501
+•API Docs (Swagger UI): http://localhost:5000/docs
+•Vector DB Dashboard (Qdrant): http://localhost:6333/dashboard
+To safely stop the application without losing database persistence: docker compose down
+
